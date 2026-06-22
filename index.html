@@ -7,8 +7,6 @@
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Persian Date Picker -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" />
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap');
@@ -302,7 +300,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 1000px;
+            min-width: 900px;
         }
         th {
             background: var(--primary-dark);
@@ -503,11 +501,6 @@
                 border: 1px solid #ccc;
             }
         }
-
-        /* Persian Datepicker overrides */
-        .datepicker-plot-area {
-            font-family: 'Peyda', 'Kalameh', 'Vazirmatn', 'Noto Sans Arabic', sans-serif !important;
-        }
     </style>
 </head>
 <body>
@@ -569,7 +562,7 @@
                     <!-- اطلاعات جلسه -->
                     <div class="form-group">
                         <label>تاریخ جلسه <span class="required">*</span></label>
-                        <input type="text" id="meetingDate" placeholder="۱۴۰۴/۰۱/۱۵" required />
+                        <input type="date" id="meetingDate" required />
                     </div>
                     <div class="form-group">
                         <label>زمان جلسه</label>
@@ -597,16 +590,6 @@
                             <option value="بسته شده - برنده">بسته شده - برنده</option>
                             <option value="بسته شده - بازنده">بسته شده - بازنده</option>
                         </select>
-                    </div>
-
-                    <!-- فیلدهای جدید -->
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label>پین کسب‌وکار (چالش‌ها و مشکلات مشتری)</label>
-                        <textarea id="businessPain" rows="2" placeholder="مشکل اصلی کسب‌وکار مشتری چیست؟ چه چالشی دارند؟"></textarea>
-                    </div>
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label>درخواست‌ها و پیشنهادات</label>
-                        <textarea id="requestsOffers" rows="2" placeholder="مشتری چه درخواستی داشت؟ ما چه پیشنهادی دادیم؟"></textarea>
                     </div>
 
                     <!-- خلاصه جلسه -->
@@ -639,7 +622,7 @@
                     </div>
                     <div class="form-group">
                         <label>تاریخ پیگیری بعدی</label>
-                        <input type="text" id="nextFollowUp" placeholder="۱۴۰۴/۰۱/۲۰" />
+                        <input type="date" id="nextFollowUp" />
                     </div>
                     <div class="form-group">
                         <label>ارزش تخمینی (تومان)</label>
@@ -726,8 +709,8 @@
                         <th>تاریخ</th>
                         <th>نوع جلسه</th>
                         <th>مرحله فروش</th>
-                        <th>وضعیت</th>
-                        <th>پین کسب‌وکار</th>
+                        <th>وضعیت پیگیری</th>
+                        <th>گام بعدی</th>
                         <th>عملیات</th>
                     </tr>
                 </thead>
@@ -747,12 +730,7 @@
 
     </div>
 
-    <!-- ===== کتابخانه‌های تاریخ شمسی ===== -->
-    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js">
-    </script>
-
+    <!-- ===== اسکریپت ===== -->
     <script>
         // ===== مدیریت داده‌ها با localStorage =====
         const STORAGE_KEY = 'peymad_sales_meetings';
@@ -770,66 +748,6 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(meetings));
         }
 
-        // ===== تبدیل تاریخ میلادی به شمسی =====
-        function toPersianDate(dateStr) {
-            if (!dateStr) return '—';
-            try {
-                const pd = new PersianDate(new Date(dateStr));
-                return pd.format('YYYY/MM/DD');
-            } catch {
-                return dateStr;
-            }
-        }
-
-        function toPersianDateFromInput(dateStr) {
-            // اگر به فرمت ۱۴۰۴/۰۱/۱۵ وارد شده، همان را برگردان
-            if (/^\d{4}\/\d{2}\/\d{2}$/.test(dateStr)) return dateStr;
-            try {
-                const pd = new PersianDate(new Date(dateStr));
-                return pd.format('YYYY/MM/DD');
-            } catch {
-                return dateStr;
-            }
-        }
-
-        // ===== تبدیل تاریخ شمسی به میلادی برای ذخیره =====
-        function toGregorianDate(persianDateStr) {
-            if (!persianDateStr) return '';
-            try {
-                const pd = new PersianDate(persianDateStr);
-                return pd.toDate().toISOString().split('T')[0];
-            } catch {
-                return persianDateStr;
-            }
-        }
-
-        // ===== مقداردهی Datepicker =====
-        function initDatepickers() {
-            // تاریخ جلسه
-            $('#meetingDate').persianDatepicker({
-                format: 'YYYY/MM/DD',
-                autoClose: true,
-                initialValue: true,
-                initialValueType: 'persian',
-                calendarType: 'persian',
-                showGregorianDate: false,
-            });
-
-            // تاریخ پیگیری بعدی
-            $('#nextFollowUp').persianDatepicker({
-                format: 'YYYY/MM/DD',
-                autoClose: true,
-                initialValue: true,
-                initialValueType: 'persian',
-                calendarType: 'persian',
-                showGregorianDate: false,
-            });
-
-            // تنظیم تاریخ امروز به عنوان پیش‌فرض
-            const today = new PersianDate().format('YYYY/MM/DD');
-            document.getElementById('meetingDate').value = today;
-        }
-
         // ===== متغیرهای فرم =====
         let isEditing = false;
         let editingId = null;
@@ -840,9 +758,6 @@
             card.classList.toggle('active');
             if (!card.classList.contains('active')) {
                 resetForm();
-            } else {
-                // ری‌ایجاد datepicker بعد از نمایش فرم
-                setTimeout(initDatepickers, 100);
             }
         }
 
@@ -853,7 +768,8 @@
             document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> ذخیره جلسه';
             isEditing = false;
             editingId = null;
-            const today = new PersianDate().format('YYYY/MM/DD');
+            // تنظیم تاریخ امروز
+            const today = new Date().toISOString().split('T')[0];
             document.getElementById('meetingDate').value = today;
             document.getElementById('nextFollowUp').value = '';
         }
@@ -870,8 +786,6 @@
             const meetingTime = document.getElementById('meetingTime').value;
             const meetingType = document.getElementById('meetingType').value;
             const salesStage = document.getElementById('salesStage').value;
-            const businessPain = document.getElementById('businessPain').value.trim();
-            const requestsOffers = document.getElementById('requestsOffers').value.trim();
             const summary = document.getElementById('summary').value.trim();
             const nextSteps = document.getElementById('nextSteps').value.trim();
             const followUpStatus = document.getElementById('followUpStatus').value;
@@ -896,8 +810,6 @@
                 meetingTime,
                 meetingType,
                 salesStage,
-                businessPain,
-                requestsOffers,
                 summary,
                 nextSteps,
                 followUpStatus,
@@ -908,11 +820,13 @@
             };
 
             if (editId) {
+                // ویرایش
                 const index = meetings.findIndex(m => m.id === editId);
                 if (index !== -1) {
                     meetings[index] = { ...meetings[index], ...meetingData };
                 }
             } else {
+                // جدید
                 const newMeeting = {
                     id: 'm_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                     createdAt: new Date().toISOString(),
@@ -940,12 +854,10 @@
             document.getElementById('contact').value = meeting.contact;
             document.getElementById('phone').value = meeting.phone || '';
             document.getElementById('email').value = meeting.email || '';
-            document.getElementById('meetingDate').value = meeting.meetingDate || new PersianDate().format('YYYY/MM/DD');
+            document.getElementById('meetingDate').value = meeting.meetingDate;
             document.getElementById('meetingTime').value = meeting.meetingTime || '';
             document.getElementById('meetingType').value = meeting.meetingType || 'حضوری';
             document.getElementById('salesStage').value = meeting.salesStage || 'جدید';
-            document.getElementById('businessPain').value = meeting.businessPain || '';
-            document.getElementById('requestsOffers').value = meeting.requestsOffers || '';
             document.getElementById('summary').value = meeting.summary || '';
             document.getElementById('nextSteps').value = meeting.nextSteps || '';
             document.getElementById('followUpStatus').value = meeting.followUpStatus || 'در انتظار اقدام';
@@ -961,7 +873,6 @@
             const card = document.getElementById('formCard');
             if (!card.classList.contains('active')) {
                 card.classList.add('active');
-                setTimeout(initDatepickers, 100);
             }
             window.scrollTo({ top: card.offsetTop - 20, behavior: 'smooth' });
         }
@@ -999,8 +910,7 @@
                 if (filterStage && m.salesStage !== filterStage) match = false;
                 if (filterStatus && m.followUpStatus !== filterStatus) match = false;
                 if (searchTerm) {
-                    const searchIn = (m.company + ' ' + m.contact + ' ' + (m.businessPain || '') + ' ' + (m.summary ||
-                        '')).toLowerCase();
+                    const searchIn = (m.company + ' ' + m.contact + ' ' + (m.summary || '')).toLowerCase();
                     if (!searchIn.includes(searchTerm)) match = false;
                 }
                 return match;
@@ -1028,18 +938,17 @@
                 const stageClass = getStageClass(m.salesStage);
                 const statusClass = getStatusClass(m.followUpStatus);
                 const priorityIcon = m.priority === 'بالا' ? '🔴' : m.priority === 'پایین' ? '🟢' : '🟡';
-                const displayDate = toPersianDate(m.meetingDate);
 
                 html += `
                     <tr>
                         <td style="text-align:center;">${index + 1}</td>
                         <td><strong>${m.company}</strong></td>
                         <td>${m.contact}</td>
-                        <td style="font-size:12px;">${displayDate}${m.meetingTime ? ' ' + m.meetingTime : ''}</td>
+                        <td style="font-size:12px;">${m.meetingDate}${m.meetingTime ? ' ' + m.meetingTime : ''}</td>
                         <td><span class="stage-badge">${m.meetingType || '—'}</span></td>
                         <td><span class="status-badge ${stageClass}">${m.salesStage || 'جدید'}</span></td>
                         <td><span class="status-badge ${statusClass}">${m.followUpStatus || 'در انتظار'}</span></td>
-                        <td style="font-size:12px; max-width:150px; word-break:break-word;">${m.businessPain ? m.businessPain.substring(0, 40) + (m.businessPain.length > 40 ? '...' : '') : '—'}</td>
+                        <td style="font-size:12px; max-width:120px; word-break:break-word;">${priorityIcon} ${m.nextSteps ? m.nextSteps.substring(0, 30) + (m.nextSteps.length > 30 ? '...' : '') : '—'}</td>
                         <td>
                             <div class="actions-cell">
                                 <button class="btn btn-sm btn-blue" onclick="editMeeting('${m.id}')">
@@ -1066,9 +975,6 @@
             const m = meetings.find(m => m.id === id);
             if (!m) return;
 
-            const displayDate = toPersianDate(m.meetingDate);
-            const displayFollowUp = m.nextFollowUp ? toPersianDate(m.nextFollowUp) : '—';
-
             const details = `
             📋 **جزئیات جلسه فروش**
             ─────────────────────
@@ -1076,25 +982,16 @@
             👤 مخاطب: ${m.contact}
             📞 تماس: ${m.phone || '—'}
             ✉️ ایمیل: ${m.email || '—'}
-            📅 تاریخ: ${displayDate} ${m.meetingTime || ''}
+            📅 تاریخ: ${m.meetingDate} ${m.meetingTime || ''}
             📌 نوع جلسه: ${m.meetingType || '—'}
             📊 مرحله فروش: ${m.salesStage || '—'}
             📌 وضعیت پیگیری: ${m.followUpStatus || '—'}
             ⚡ اولویت: ${m.priority || '—'}
-
-            💼 پین کسب‌وکار:
-            ${m.businessPain || '—'}
-
-            📝 درخواست‌ها و پیشنهادات:
-            ${m.requestsOffers || '—'}
-
-            📋 خلاصه جلسه:
+            📝 خلاصه جلسه:
             ${m.summary || '—'}
-
             🚀 گام‌های بعدی:
             ${m.nextSteps || '—'}
-
-            📅 پیگیری بعدی: ${displayFollowUp}
+            📅 پیگیری بعدی: ${m.nextFollowUp || '—'}
             💰 ارزش تخمینی: ${m.estimatedValue ? m.estimatedValue.toLocaleString() + ' تومان' : '—'}
             ─────────────────────
             ثبت شده در: ${new Date(m.createdAt).toLocaleDateString('fa-IR')}
@@ -1168,6 +1065,7 @@
                 return;
             }
 
+            // هدرها
             const headers = [
                 'ردیف',
                 'نام شرکت',
@@ -1178,8 +1076,6 @@
                 'زمان جلسه',
                 'نوع جلسه',
                 'مرحله فروش',
-                'پین کسب‌وکار',
-                'درخواست‌ها و پیشنهادات',
                 'خلاصه جلسه',
                 'گام‌های بعدی',
                 'وضعیت پیگیری',
@@ -1199,17 +1095,15 @@
                     `"${m.contact}"`,
                     `"${m.phone || ''}"`,
                     `"${m.email || ''}"`,
-                    `"${toPersianDate(m.meetingDate)}"`,
+                    `"${m.meetingDate}"`,
                     `"${m.meetingTime || ''}"`,
                     `"${m.meetingType || ''}"`,
                     `"${m.salesStage || ''}"`,
-                    `"${(m.businessPain || '').replace(/"/g, '""')}"`,
-                    `"${(m.requestsOffers || '').replace(/"/g, '""')}"`,
                     `"${(m.summary || '').replace(/"/g, '""')}"`,
                     `"${(m.nextSteps || '').replace(/"/g, '""')}"`,
                     `"${m.followUpStatus || ''}"`,
                     `"${m.priority || ''}"`,
-                    `"${m.nextFollowUp ? toPersianDate(m.nextFollowUp) : ''}"`,
+                    `"${m.nextFollowUp || ''}"`,
                     m.estimatedValue || 0,
                     `"${new Date(m.createdAt).toLocaleDateString('fa-IR')}"`
                 ];
@@ -1220,7 +1114,7 @@
             const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `گزارش_جلسات_فروش_${new PersianDate().format('YYYYMMDD')}.csv`;
+            link.download = `گزارش_جلسات_فروش_${new Date().toISOString().split('T')[0]}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1229,17 +1123,15 @@
 
         // ===== مقداردهی اولیه =====
         function init() {
-            // تنظیم تاریخ امروز به شمسی
-            const today = new PersianDate().format('YYYY/MM/DD');
+            // تنظیم تاریخ امروز در فرم
+            const today = new Date().toISOString().split('T')[0];
             document.getElementById('meetingDate').value = today;
-
-            // مقداردهی datepickerها
-            setTimeout(initDatepickers, 200);
 
             renderTable();
             updateStats();
             updateQuickStats();
 
+            // اگر داده وجود دارد، آمار را به‌روز کن
             const meetings = getMeetings();
             if (meetings.length > 0) {
                 console.log('✅ بانک اطلاعات فروش پیماد – تعداد جلسات:', meetings.length);
