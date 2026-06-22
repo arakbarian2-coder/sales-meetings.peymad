@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>بانک اطلاعات جلسات فروش – پیماد</title>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;800&display=swap');
+
+        @font-face {
+            font-family: 'Peyda';
+            src: local('Peyda'), local('پیدا');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Peyda';
+            src: local('Peyda-Bold'), local('پیدا-ضخیم');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: 'Kalameh';
+            src: local('Kalameh'), local('کلمه');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Kalameh';
+            src: local('Kalameh-Bold'), local('کلمه-ضخیم');
+            font-weight: bold;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a2b3e;
+            --primary-blue: #1e5778;
+            --accent-gold: #f4b942;
+            --light-bg: #f5f9fe;
+            --white: #ffffff;
+            --shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.08);
+            --gray-border: #e2edf7;
+            --text-dark: #1f2f3e;
+            --text-light: #4a627a;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+
+        body {
+            font-family: 'Peyda', 'Kalameh', 'Vazirmatn', 'Noto Sans Arabic', 'Tahoma', 'Segoe UI', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            direction: rtl;
+            line-height: 1.6;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ---------- هدر ---------- */
+        .page-header {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 18px 28px;
+            border-radius: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 4px solid var(--accent-gold);
+            box-shadow: var(--shadow);
+        }
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            color: var(--accent-gold);
+        }
+        .page-header .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+        .page-header .stats span {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* ---------- دکمه‌ها ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--accent-gold);
+            color: #1f2f3e;
+        }
+        .btn-primary:hover {
+            background: #e0a523;
+            transform: translateY(-2px);
+        }
+        .btn-blue {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+        .btn-blue:hover {
+            background: #0f3b5c;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        .btn-success:hover {
+            background: #1e8449;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--gray-border);
+            color: var(--text-dark);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        .btn-sm {
+            padding: 4px 14px;
+            font-size: 12px;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---------- فرم ---------- */
+        .form-card {
+            background: var(--white);
+            border-radius: 28px;
+            padding: 24px 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-border);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .form-card.active {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .form-group label .required {
+            color: var(--danger);
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 8px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--gray-border);
+            font-family: inherit;
+            font-size: 14px;
+            transition: 0.2s;
+            background: var(--white);
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(244, 185, 66, 0.15);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        /* ---------- جدول / لیست گزارش‌ها ---------- */
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .reports-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .reports-header h2 i {
+            color: var(--accent-gold);
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: var(--white);
+            padding: 12px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-border);
+            margin-bottom: 16px;
+        }
+        .filter-bar select,
+        .filter-bar input {
+            padding: 6px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--gray-border);
+            font-family: inherit;
+            font-size: 13px;
+            background: var(--white);
+        }
+        .filter-bar select:focus,
+        .filter-bar input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            background: var(--white);
+            border-radius: 24px;
+            border: 1px solid var(--gray-border);
+            box-shadow: var(--shadow);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 900px;
+        }
+        th {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 12px 14px;
+            text-align: center;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--gray-border);
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.new {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .status-badge.contacted {
+            background: #fef9e7;
+            color: #92400e;
+        }
+        .status-badge.demo {
+            background: #e8f5e9;
+            color: #1e7e34;
+        }
+        .status-badge.proposal {
+            background: #fce4ec;
+            color: #b71c1c;
+        }
+        .status-badge.negotiation {
+            background: #fff3e0;
+            color: #bf360c;
+        }
+        .status-badge.won {
+            background: #e8f5e9;
+            color: #1e7e34;
+        }
+        .status-badge.lost {
+            background: #f5f5f5;
+            color: #616161;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #eaf3fa;
+            color: var(--primary-blue);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--gray-border);
+            margin-bottom: 12px;
+        }
+
+        /* ---------- آمار سریع ---------- */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 14px 16px;
+            text-align: center;
+            border: 1px solid var(--gray-border);
+            box-shadow: var(--shadow);
+        }
+        .stat-box .number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .stat-box .label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .stat-box.gold {
+            border-top: 4px solid var(--accent-gold);
+        }
+        .stat-box.blue {
+            border-top: 4px solid var(--primary-blue);
+        }
+        .stat-box.green {
+            border-top: 4px solid var(--success);
+        }
+        .stat-box.red {
+            border-top: 4px solid var(--danger);
+        }
+
+        /* ---------- خروجی اکسل (ساده) ---------- */
+        .export-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ---------- ریسپانسیو ---------- */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .page-header h1 {
+                font-size: 20px;
+            }
+            .page-header .stats {
+                font-size: 12px;
+                gap: 10px;
+            }
+            .form-card {
+                padding: 16px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .reports-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .actions-cell {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-sm {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-box .number {
+                font-size: 20px;
+            }
+        }
+
+        /* ---------- چاپ ---------- */
+        @media print {
+            .btn,
+            .filter-bar,
+            .form-card {
+                display: none !important;
+            }
+            .page-header {
+                background: #0a2b3e !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            th {
+                background: #0a2b3e !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .table-wrap {
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== هدر ===== -->
+        <header class="page-header">
+            <h1><i class="fas fa-users"></i> بانک اطلاعات جلسات فروش</h1>
+            <div class="stats">
+                <span><i class="fas fa-calendar-check"></i> کل جلسات: <strong id="totalCount">۰</strong></span>
+                <span><i class="fas fa-hourglass-half"></i> پیگیری: <strong id="pendingCount">۰</strong></span>
+                <span><i class="fas fa-check-circle" style="color:var(--success);"></i> بسته شده: <strong id="closedCount">۰</strong></span>
+            </div>
+        </header>
+
+        <!-- ===== دکمه افزودن جلسه جدید ===== -->
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+            <button class="btn btn-primary" onclick="toggleForm()">
+                <i class="fas fa-plus"></i> ثبت جلسه جدید
+            </button>
+            <button class="btn btn-blue" onclick="exportCSV()">
+                <i class="fas fa-file-excel"></i> خروجی اکسل (CSV)
+            </button>
+            <button class="btn btn-outline" onclick="clearAllData()" style="color:var(--danger); border-color:var(--danger);">
+                <i class="fas fa-trash"></i> حذف همه
+            </button>
+        </div>
+
+        <!-- ===== فرم ثبت جلسه ===== -->
+        <div class="form-card" id="formCard">
+            <h2 style="font-size:20px; margin-bottom:16px; display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-pen" style="color:var(--accent-gold);"></i>
+                <span id="formTitle">ثبت جلسه جدید</span>
+            </h2>
+
+            <form id="meetingForm" onsubmit="saveMeeting(event)">
+                <input type="hidden" id="editId" value="" />
+
+                <div class="form-grid">
+                    <!-- اطلاعات مشتری -->
+                    <div class="form-group">
+                        <label>نام شرکت <span class="required">*</span></label>
+                        <input type="text" id="company" placeholder="مثال: بانک مهر" required />
+                    </div>
+                    <div class="form-group">
+                        <label>نام مخاطب <span class="required">*</span></label>
+                        <input type="text" id="contact" placeholder="مثال: آقای رضایی" required />
+                    </div>
+                    <div class="form-group">
+                        <label>شماره تماس</label>
+                        <input type="text" id="phone" placeholder="۰۹۱۲۱۲۳۴۵۶۷" />
+                    </div>
+                    <div class="form-group">
+                        <label>ایمیل</label>
+                        <input type="email" id="email" placeholder="info@bank.com" />
+                    </div>
+
+                    <!-- اطلاعات جلسه -->
+                    <div class="form-group">
+                        <label>تاریخ جلسه <span class="required">*</span></label>
+                        <input type="date" id="meetingDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label>زمان جلسه</label>
+                        <input type="time" id="meetingTime" />
+                    </div>
+                    <div class="form-group">
+                        <label>نوع جلسه</label>
+                        <select id="meetingType">
+                            <option value="حضوری">حضوری</option>
+                            <option value="آنلاین (ویکی‌چت/بله)">آنلاین (ویکی‌چت/بله)</option>
+                            <option value="تماس تلفنی">تماس تلفنی</option>
+                            <option value="دموی اختصاصی">دموی اختصاصی</option>
+                            <option value="ارسال ایمیل">ارسال ایمیل</option>
+                            <option value="جلسه داخلی">جلسه داخلی</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>مرحله فروش</label>
+                        <select id="salesStage">
+                            <option value="جدید">جدید (شناسایی)</option>
+                            <option value="تماس اولیه">تماس اولیه</option>
+                            <option value="دمو">دمو</option>
+                            <option value="پیشنهاد">پیشنهاد قیمت</option>
+                            <option value="مذاکره">مذاکره</option>
+                            <option value="بسته شده - برنده">بسته شده - برنده</option>
+                            <option value="بسته شده - بازنده">بسته شده - بازنده</option>
+                        </select>
+                    </div>
+
+                    <!-- خلاصه جلسه -->
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>خلاصه جلسه (موضوعات، بازخورد، نکات)</label>
+                        <textarea id="summary" rows="3" placeholder="موضوعات مطرح شده، بازخورد مشتری، نگرانی‌ها، نیازها..."></textarea>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>گام‌های بعدی (اقدامات پیگیری)</label>
+                        <textarea id="nextSteps" rows="2" placeholder="چه کاری باید انجام شود؟ چه زمانی؟ چه کسی؟"></textarea>
+                    </div>
+
+                    <!-- وضعیت و اولویت -->
+                    <div class="form-group">
+                        <label>وضعیت پیگیری</label>
+                        <select id="followUpStatus">
+                            <option value="در انتظار اقدام">در انتظار اقدام</option>
+                            <option value="منتظر پاسخ مشتری">منتظر پاسخ مشتری</option>
+                            <option value="پیگیری مجدد نیاز است">پیگیری مجدد نیاز است</option>
+                            <option value="تکمیل شده">تکمیل شده</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>اولویت</label>
+                        <select id="priority">
+                            <option value="بالا">🔴 بالا</option>
+                            <option value="متوسط" selected>🟡 متوسط</option>
+                            <option value="پایین">🟢 پایین</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>تاریخ پیگیری بعدی</label>
+                        <input type="date" id="nextFollowUp" />
+                    </div>
+                    <div class="form-group">
+                        <label>ارزش تخمینی (تومان)</label>
+                        <input type="number" id="estimatedValue" placeholder="مثلاً ۱۰۰۰۰۰۰۰۰" />
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success" id="submitBtn">
+                        <i class="fas fa-save"></i> ذخیره جلسه
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="toggleForm()">
+                        <i class="fas fa-times"></i> انصراف
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ===== فیلتر و جستجو ===== -->
+        <div class="filter-bar">
+            <i class="fas fa-filter" style="color:var(--text-light);"></i>
+            <select id="filterStage" onchange="renderTable()">
+                <option value="">همه مراحل</option>
+                <option value="جدید">جدید</option>
+                <option value="تماس اولیه">تماس اولیه</option>
+                <option value="دمو">دمو</option>
+                <option value="پیشنهاد">پیشنهاد</option>
+                <option value="مذاکره">مذاکره</option>
+                <option value="بسته شده - برنده">برنده</option>
+                <option value="بسته شده - بازنده">بازنده</option>
+            </select>
+            <select id="filterStatus" onchange="renderTable()">
+                <option value="">همه وضعیت‌ها</option>
+                <option value="در انتظار اقدام">در انتظار اقدام</option>
+                <option value="منتظر پاسخ مشتری">منتظر پاسخ مشتری</option>
+                <option value="پیگیری مجدد نیاز است">پیگیری مجدد نیاز است</option>
+                <option value="تکمیل شده">تکمیل شده</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="جستجو در شرکت، مخاطب..." oninput="renderTable()" style="flex:1; min-width:150px;" />
+            <button class="btn btn-sm btn-outline" onclick="resetFilters()">
+                <i class="fas fa-undo"></i> بازنشانی
+            </button>
+        </div>
+
+        <!-- ===== آمار سریع ===== -->
+        <div class="quick-stats" id="quickStats">
+            <div class="stat-box gold">
+                <div class="number" id="statTotal">۰</div>
+                <div class="label">کل جلسات</div>
+            </div>
+            <div class="stat-box blue">
+                <div class="number" id="statPending">۰</div>
+                <div class="label">در انتظار پیگیری</div>
+            </div>
+            <div class="stat-box green">
+                <div class="number" id="statWon">۰</div>
+                <div class="label">برنده</div>
+            </div>
+            <div class="stat-box red">
+                <div class="number" id="statLost">۰</div>
+                <div class="label">بازنده</div>
+            </div>
+            <div class="stat-box" style="border-top:4px solid #8e44ad;">
+                <div class="number" id="statValue">۰</div>
+                <div class="label">ارزش کل (تومان)</div>
+            </div>
+        </div>
+
+        <!-- ===== لیست گزارش‌ها ===== -->
+        <div class="reports-header">
+            <h2><i class="fas fa-list-ul"></i> لیست جلسات ثبت‌شده</h2>
+            <div class="export-bar">
+                <span style="font-size:13px; color:var(--text-light);" id="recordCount">۰ رکورد</span>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>شرکت</th>
+                        <th>مخاطب</th>
+                        <th>تاریخ</th>
+                        <th>نوع جلسه</th>
+                        <th>مرحله فروش</th>
+                        <th>وضعیت پیگیری</th>
+                        <th>گام بعدی</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody id="reportsBody">
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>هیچ جلسه‌ای ثبت نشده است.</p>
+                                <p style="font-size:13px;">برای شروع، دکمه «ثبت جلسه جدید» را بزنید.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- ===== اسکریپت ===== -->
+    <script>
+        // ===== مدیریت داده‌ها با localStorage =====
+        const STORAGE_KEY = 'peymad_sales_meetings';
+
+        function getMeetings() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveMeetingsToStorage(meetings) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(meetings));
+        }
+
+        // ===== متغیرهای فرم =====
+        let isEditing = false;
+        let editingId = null;
+
+        // ===== نمایش/عدم نمایش فرم =====
+        function toggleForm() {
+            const card = document.getElementById('formCard');
+            card.classList.toggle('active');
+            if (!card.classList.contains('active')) {
+                resetForm();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('meetingForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('formTitle').textContent = 'ثبت جلسه جدید';
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> ذخیره جلسه';
+            isEditing = false;
+            editingId = null;
+            // تنظیم تاریخ امروز
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('meetingDate').value = today;
+            document.getElementById('nextFollowUp').value = '';
+        }
+
+        // ===== ذخیره جلسه =====
+        function saveMeeting(e) {
+            e.preventDefault();
+
+            const company = document.getElementById('company').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const meetingDate = document.getElementById('meetingDate').value;
+            const meetingTime = document.getElementById('meetingTime').value;
+            const meetingType = document.getElementById('meetingType').value;
+            const salesStage = document.getElementById('salesStage').value;
+            const summary = document.getElementById('summary').value.trim();
+            const nextSteps = document.getElementById('nextSteps').value.trim();
+            const followUpStatus = document.getElementById('followUpStatus').value;
+            const priority = document.getElementById('priority').value;
+            const nextFollowUp = document.getElementById('nextFollowUp').value;
+            const estimatedValue = document.getElementById('estimatedValue').value || '0';
+
+            if (!company || !contact || !meetingDate) {
+                alert('لطفاً فیلدهای الزامی (نام شرکت، نام مخاطب، تاریخ جلسه) را پر کنید.');
+                return;
+            }
+
+            const editId = document.getElementById('editId').value;
+            const meetings = getMeetings();
+
+            const meetingData = {
+                company,
+                contact,
+                phone,
+                email,
+                meetingDate,
+                meetingTime,
+                meetingType,
+                salesStage,
+                summary,
+                nextSteps,
+                followUpStatus,
+                priority,
+                nextFollowUp,
+                estimatedValue: parseInt(estimatedValue) || 0,
+                updatedAt: new Date().toISOString()
+            };
+
+            if (editId) {
+                // ویرایش
+                const index = meetings.findIndex(m => m.id === editId);
+                if (index !== -1) {
+                    meetings[index] = { ...meetings[index], ...meetingData };
+                }
+            } else {
+                // جدید
+                const newMeeting = {
+                    id: 'm_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                    createdAt: new Date().toISOString(),
+                    ...meetingData
+                };
+                meetings.unshift(newMeeting);
+            }
+
+            saveMeetingsToStorage(meetings);
+            resetForm();
+            document.getElementById('formCard').classList.remove('active');
+            renderTable();
+            updateStats();
+            updateQuickStats();
+        }
+
+        // ===== ویرایش جلسه =====
+        function editMeeting(id) {
+            const meetings = getMeetings();
+            const meeting = meetings.find(m => m.id === id);
+            if (!meeting) return;
+
+            document.getElementById('editId').value = meeting.id;
+            document.getElementById('company').value = meeting.company;
+            document.getElementById('contact').value = meeting.contact;
+            document.getElementById('phone').value = meeting.phone || '';
+            document.getElementById('email').value = meeting.email || '';
+            document.getElementById('meetingDate').value = meeting.meetingDate;
+            document.getElementById('meetingTime').value = meeting.meetingTime || '';
+            document.getElementById('meetingType').value = meeting.meetingType || 'حضوری';
+            document.getElementById('salesStage').value = meeting.salesStage || 'جدید';
+            document.getElementById('summary').value = meeting.summary || '';
+            document.getElementById('nextSteps').value = meeting.nextSteps || '';
+            document.getElementById('followUpStatus').value = meeting.followUpStatus || 'در انتظار اقدام';
+            document.getElementById('priority').value = meeting.priority || 'متوسط';
+            document.getElementById('nextFollowUp').value = meeting.nextFollowUp || '';
+            document.getElementById('estimatedValue').value = meeting.estimatedValue || '';
+
+            document.getElementById('formTitle').textContent = 'ویرایش جلسه';
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-edit"></i> بروزرسانی';
+            isEditing = true;
+            editingId = id;
+
+            const card = document.getElementById('formCard');
+            if (!card.classList.contains('active')) {
+                card.classList.add('active');
+            }
+            window.scrollTo({ top: card.offsetTop - 20, behavior: 'smooth' });
+        }
+
+        // ===== حذف جلسه =====
+        function deleteMeeting(id) {
+            if (!confirm('آیا از حذف این جلسه مطمئن هستید؟')) return;
+            let meetings = getMeetings();
+            meetings = meetings.filter(m => m.id !== id);
+            saveMeetingsToStorage(meetings);
+            renderTable();
+            updateStats();
+            updateQuickStats();
+        }
+
+        // ===== حذف همه داده‌ها =====
+        function clearAllData() {
+            if (!confirm('⚠️ همه جلسات حذف خواهند شد. آیا مطمئن هستید؟')) return;
+            if (!confirm('تأیید نهایی: این عمل غیرقابل بازگشت است.')) return;
+            saveMeetingsToStorage([]);
+            renderTable();
+            updateStats();
+            updateQuickStats();
+        }
+
+        // ===== رندر جدول =====
+        function renderTable() {
+            const meetings = getMeetings();
+            const filterStage = document.getElementById('filterStage').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let filtered = meetings.filter(m => {
+                let match = true;
+                if (filterStage && m.salesStage !== filterStage) match = false;
+                if (filterStatus && m.followUpStatus !== filterStatus) match = false;
+                if (searchTerm) {
+                    const searchIn = (m.company + ' ' + m.contact + ' ' + (m.summary || '')).toLowerCase();
+                    if (!searchIn.includes(searchTerm)) match = false;
+                }
+                return match;
+            });
+
+            const tbody = document.getElementById('reportsBody');
+            document.getElementById('recordCount').textContent = filtered.length + ' رکورد';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>${meetings.length === 0 ? 'هیچ جلسه‌ای ثبت نشده است.' : 'هیچ موردی با فیلترهای انتخاب شده یافت نشد.'}</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((m, index) => {
+                const stageClass = getStageClass(m.salesStage);
+                const statusClass = getStatusClass(m.followUpStatus);
+                const priorityIcon = m.priority === 'بالا' ? '🔴' : m.priority === 'پایین' ? '🟢' : '🟡';
+
+                html += `
+                    <tr>
+                        <td style="text-align:center;">${index + 1}</td>
+                        <td><strong>${m.company}</strong></td>
+                        <td>${m.contact}</td>
+                        <td style="font-size:12px;">${m.meetingDate}${m.meetingTime ? ' ' + m.meetingTime : ''}</td>
+                        <td><span class="stage-badge">${m.meetingType || '—'}</span></td>
+                        <td><span class="status-badge ${stageClass}">${m.salesStage || 'جدید'}</span></td>
+                        <td><span class="status-badge ${statusClass}">${m.followUpStatus || 'در انتظار'}</span></td>
+                        <td style="font-size:12px; max-width:120px; word-break:break-word;">${priorityIcon} ${m.nextSteps ? m.nextSteps.substring(0, 30) + (m.nextSteps.length > 30 ? '...' : '') : '—'}</td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="btn btn-sm btn-blue" onclick="editMeeting('${m.id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteMeeting('${m.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="viewDetails('${m.id}')" title="مشاهده جزئیات">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // ===== مشاهده جزئیات =====
+        function viewDetails(id) {
+            const meetings = getMeetings();
+            const m = meetings.find(m => m.id === id);
+            if (!m) return;
+
+            const details = `
+            📋 **جزئیات جلسه فروش**
+            ─────────────────────
+            🏢 شرکت: ${m.company}
+            👤 مخاطب: ${m.contact}
+            📞 تماس: ${m.phone || '—'}
+            ✉️ ایمیل: ${m.email || '—'}
+            📅 تاریخ: ${m.meetingDate} ${m.meetingTime || ''}
+            📌 نوع جلسه: ${m.meetingType || '—'}
+            📊 مرحله فروش: ${m.salesStage || '—'}
+            📌 وضعیت پیگیری: ${m.followUpStatus || '—'}
+            ⚡ اولویت: ${m.priority || '—'}
+            📝 خلاصه جلسه:
+            ${m.summary || '—'}
+            🚀 گام‌های بعدی:
+            ${m.nextSteps || '—'}
+            📅 پیگیری بعدی: ${m.nextFollowUp || '—'}
+            💰 ارزش تخمینی: ${m.estimatedValue ? m.estimatedValue.toLocaleString() + ' تومان' : '—'}
+            ─────────────────────
+            ثبت شده در: ${new Date(m.createdAt).toLocaleDateString('fa-IR')}
+            `;
+
+            alert(details);
+        }
+
+        // ===== کلاس‌های وضعیت =====
+        function getStageClass(stage) {
+            const map = {
+                'جدید': 'new',
+                'تماس اولیه': 'contacted',
+                'دمو': 'demo',
+                'پیشنهاد': 'proposal',
+                'مذاکره': 'negotiation',
+                'بسته شده - برنده': 'won',
+                'بسته شده - بازنده': 'lost'
+            };
+            return map[stage] || 'new';
+        }
+
+        function getStatusClass(status) {
+            const map = {
+                'در انتظار اقدام': 'contacted',
+                'منتظر پاسخ مشتری': 'demo',
+                'پیگیری مجدد نیاز است': 'proposal',
+                'تکمیل شده': 'won'
+            };
+            return map[status] || 'contacted';
+        }
+
+        // ===== آمار =====
+        function updateStats() {
+            const meetings = getMeetings();
+            document.getElementById('totalCount').textContent = meetings.length;
+            const pending = meetings.filter(m => m.followUpStatus !== 'تکمیل شده').length;
+            document.getElementById('pendingCount').textContent = pending;
+            const closed = meetings.filter(m => m.followUpStatus === 'تکمیل شده').length;
+            document.getElementById('closedCount').textContent = closed;
+        }
+
+        function updateQuickStats() {
+            const meetings = getMeetings();
+            const total = meetings.length;
+            const pending = meetings.filter(m => m.followUpStatus !== 'تکمیل شده').length;
+            const won = meetings.filter(m => m.salesStage === 'بسته شده - برنده').length;
+            const lost = meetings.filter(m => m.salesStage === 'بسته شده - بازنده').length;
+            const totalValue = meetings.reduce((sum, m) => sum + (m.estimatedValue || 0), 0);
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statWon').textContent = won;
+            document.getElementById('statLost').textContent = lost;
+            document.getElementById('statValue').textContent = totalValue.toLocaleString();
+        }
+
+        // ===== فیلترها =====
+        function resetFilters() {
+            document.getElementById('filterStage').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('searchInput').value = '';
+            renderTable();
+        }
+
+        // ===== خروجی CSV (اکسل) =====
+        function exportCSV() {
+            const meetings = getMeetings();
+            if (meetings.length === 0) {
+                alert('هیچ داده‌ای برای خروجی وجود ندارد.');
+                return;
+            }
+
+            // هدرها
+            const headers = [
+                'ردیف',
+                'نام شرکت',
+                'نام مخاطب',
+                'شماره تماس',
+                'ایمیل',
+                'تاریخ جلسه',
+                'زمان جلسه',
+                'نوع جلسه',
+                'مرحله فروش',
+                'خلاصه جلسه',
+                'گام‌های بعدی',
+                'وضعیت پیگیری',
+                'اولویت',
+                'تاریخ پیگیری بعدی',
+                'ارزش تخمینی',
+                'تاریخ ثبت'
+            ];
+
+            let csvRows = [];
+            csvRows.push(headers.join(','));
+
+            meetings.forEach((m, index) => {
+                const row = [
+                    index + 1,
+                    `"${m.company}"`,
+                    `"${m.contact}"`,
+                    `"${m.phone || ''}"`,
+                    `"${m.email || ''}"`,
+                    `"${m.meetingDate}"`,
+                    `"${m.meetingTime || ''}"`,
+                    `"${m.meetingType || ''}"`,
+                    `"${m.salesStage || ''}"`,
+                    `"${(m.summary || '').replace(/"/g, '""')}"`,
+                    `"${(m.nextSteps || '').replace(/"/g, '""')}"`,
+                    `"${m.followUpStatus || ''}"`,
+                    `"${m.priority || ''}"`,
+                    `"${m.nextFollowUp || ''}"`,
+                    m.estimatedValue || 0,
+                    `"${new Date(m.createdAt).toLocaleDateString('fa-IR')}"`
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `گزارش_جلسات_فروش_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
+
+        // ===== مقداردهی اولیه =====
+        function init() {
+            // تنظیم تاریخ امروز در فرم
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('meetingDate').value = today;
+
+            renderTable();
+            updateStats();
+            updateQuickStats();
+
+            // اگر داده وجود دارد، آمار را به‌روز کن
+            const meetings = getMeetings();
+            if (meetings.length > 0) {
+                console.log('✅ بانک اطلاعات فروش پیماد – تعداد جلسات:', meetings.length);
+            }
+        }
+
+        // اجرا در بارگذاری صفحه
+        document.addEventListener('DOMContentLoaded', init);
+
+        // ===== میانبر کیبورد: ESC برای بستن فرم =====
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const card = document.getElementById('formCard');
+                if (card.classList.contains('active')) {
+                    toggleForm();
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
